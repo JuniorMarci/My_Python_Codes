@@ -181,6 +181,12 @@ def GerarApresentacao(TabFiltrada,Dep, mes):
     # Salvar a apresentação
     prs.save('../Apresentacao'+Dep+'.pptx')
 
-Dep = 'TI'
-TabM = Filtrar(TabMetas,"",False,'Departamento',Dep)
-GerarApresentacao(TabM,Dep,7)
+for Dep in TabMetas[~ pd.isna(TabMetas['Departamento'])]['Departamento'].unique():
+    #Dep = 'TI'
+    TabM = Filtrar(TabMetas,"",False,'Departamento',Dep)
+    GerarApresentacao(TabM,Dep,7)
+
+'''
+TabM = Filtrar(TabMetas,"",False,'Departamento','GEST')
+GerarApresentacao(TabM,'GEST',7)
+'''

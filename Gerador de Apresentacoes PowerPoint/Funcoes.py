@@ -50,9 +50,27 @@ def GerGrafico(df,ex,ey,ez,Cat,Od):
         #plt.text(x, y, str(bar.get_height()), ha='center', va='bottom', fontsize=25)
         plt.text(x, y, Abreviar(bar.get_height()), ha='center', va='bottom', fontsize=25)
 
+    #plt.axis('off')
+
+    # Ajuste as propriedades dos eixos
+    eixos = plt.gca()  # Obtenha os eixos atuais
+
+    # Oculte os contornos dos lados direito e superior
+    eixos.spines['top'].set_visible(False)
+    eixos.spines['right'].set_visible(False)
+
+    plt.axhline(0, color='gray', linestyle='-') # Adicionando linha no eixo zero
+
     # Configurar os rótulos do eixo x com os nomes
     plt.xticks(df.index, df[ex],rotation=30,fontsize=25)
-    plt.yticks([])
+    try:
+        Minimo = min(df[ey])
+        Maximo = max(df[ey])
+        if (Maximo<=-1): plt.yticks([0,Minimo,Maximo],fontsize=30)
+        elif(Minimo<=-1): plt.yticks([Minimo,0,Maximo],fontsize=30)
+        else: plt.yticks([0,Minimo,Maximo],fontsize=30)
+
+    except: print('Sem min/máx')
 
     # Mostrar o gráfico
     Nome = '../Graficos/'+str(str(Od)+"-"+ex+"-"+ey+"-"+Cat+'.PNG')
