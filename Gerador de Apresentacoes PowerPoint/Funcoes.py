@@ -73,7 +73,8 @@ def GerGrafico(df,ex,ey,ez,Cat,Od):
     except: print('Sem min/máx')
 
     # Mostrar o gráfico
-    Nome = '../Graficos/'+str(str(Od)+"-"+ex+"-"+ey+"-"+Cat+'.PNG')
+    #Nome = '../Graficos/'+str(str(Od)+" - "+ey+" - "+ex+"{ EX -- Cat }"+Cat+'.PNG')
+    Nome = '../Graficos/'+str(str(Od)+" - "+ey+' - '+Cat+'.PNG')
     plt.savefig(Nome,dpi=150)
     #plt.show()
     plt.close()
@@ -96,4 +97,85 @@ def Odf(Od):
     if (int(Od)<10): Od='00'+str(int(Od))
     return (Od)
 
+
+def NumPMes(Coluna):
+    Meses = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez']
+    mêsT = Coluna
+    for MM in Meses:
+        try: mêsT = mêsT.replace(Meses.index(MM)+1,MM)
+        except Exception as e: print('Erro T:',e)
+
+    return mêsT
+
+
+
+
+
+#import plotly.express as px
+#import plotly.graph_objects as go
+
+def GerGraficoP(df, ex, ey, ez, Cat, Od):
+    df[ey] = df[ey].astype(int)
+
+    # Cores de exemplo
+    if ez != "":
+        try:
+            colors = ['white' if value < 0 else 'red' if value < 90 else 'yellow' if value < 99.9 else 'green' for value in df['Nota Pontual']]
+        except:
+            colors = ['white' if value < 0 else 'red' if value < 90 else 'yellow' if value < 99.9 else 'green' for value in df[ey]]
+    else:
+        colors = ['white' if value < 0 else 'red' if value < 90 else 'yellow' if value < 99.9 else 'green' for value in df[ey]]
+
+    # Criar o gráfico de barras
+    fig = go.Figure(data=[
+        go.Bar(
+            x=df.index,
+            y=df[ey],
+            marker_color=colors,
+            width=0.5
+        )
+    ])
+
+    # Adicionar os valores no topo das barras
+    for index, value in enumerate(df[ey]):
+        fig.add_annotation(
+            text=str(value),
+            x=index,
+            y=value + 0.1,
+            showarrow=False,
+            font=dict(size=25)
+        )
+
+    # Configurar o layout do gráfico
+    fig.update_layout(
+        xaxis=dict(
+            tickmode='array',
+            tickvals=list(df.index),
+            ticktext=list(df[ex]),
+            tickangle=30,
+            tickfont=dict(size=25),
+        ),
+        yaxis=dict(
+            tickvals=[0, min(df[ey]), max(df[ey])],
+            tickfont=dict(size=30),
+        ),
+        title=dict(text=str(Od) + " - " + ey + ' - ' + Cat),
+        showlegend=False,
+        xaxis_title=ex,
+        yaxis_title=ey
+    )
+
+    # Adicionar a linha horizontal no eixo zero
+    fig.add_shape(go.layout.Shape(
+        type="line",
+        x0=-0.5,
+        x1=len(df.index) - 0.5,
+        y0=0,
+        y1=0,
+        line=dict(color="gray", dash="solid")
+    ))
+
+    # Salvar o gráfico
+    Nome = '../Graficos/' + str(Od) + " - " + ey + ' - ' + Cat + '.PNG'
+    fig.write_image(Nome, width=1200, height=600, scale=2)
 
