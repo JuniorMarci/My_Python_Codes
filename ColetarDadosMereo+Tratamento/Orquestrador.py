@@ -1,3 +1,7 @@
+from datetime import datetime
+print("Iniciado em: ",str(datetime.now().strftime("%d/%m/%y às %H:%M:%S")))
+
+
 from time import sleep
 
 import Carregar_Consolidados

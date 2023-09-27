@@ -45,6 +45,12 @@ Metas['Cod.Unico'] ="C"+Metas['Código da Área']+"::"+Metas['Login']
 # Carregando a tabela de informações dos shoppings
 sh = pd.read_excel('./Entradas_Personalizadas/Shoppings.xlsx')
 
+# Carregando tabela para Categorização de cargos dos colaboradores
+
+	
+
+Cargos = pd.read_csv('./Entradas_Personalizadas/Cargos.csv') 
+
 tabCat = [] # Criada variável da nova tabela de categorias
 tabCons = [] # Criada variável dos dados consolidados separados por mês
 
@@ -56,15 +62,29 @@ def Separar(texto):
         texto = texto.replace(c,'-')
     return texto
 
+Cargo = [] # Criação da base da coluna de cargos 
+
+
 for c in range(len(Consolidada['Cod.Unico'])): # Identificação dos códigos únicos
     #df['sh'][c] = [] # Criação da base da coluna
     idc = []
+    FoiCargo = True # Variável de verificação se o cargo foi identificado 
 
     for d in (Separar(Consolidada['Descrição da Área'][c].replace("Partage ADM","Partage_ADM")).split('-')): # Iteração nas áreas já formatadas
         if (d in sh['CS'].values): # Comparação com cara código de shopping
             #df['sh'][c].append(d) # Acréscimo na coluna. Tentativa de fazer tudo numa só tabela
             tabCat.append([Consolidada['Cod.Unico'][c],d]) # Alimentação da tabela de categorias
             idc.append(c)
+
+        if (FoiCargo):
+            if (d in Cargos['Cargos'].values): # Comparação para inclusão do cargo
+
+                Cargo.append(d)
+                FoiCargo = False
+
+    if (FoiCargo): Cargo.append('Sem cargo') 
+
+
 
     if (c in idc): 1==1
     else: tabCat.append([Consolidada['Cod.Unico'][c],'Sem categoria'])
@@ -73,6 +93,7 @@ for c in range(len(Consolidada['Cod.Unico'])): # Identificação dos códigos ú
         actual = "mês "+str(m)
         tabCons.append([Consolidada['Cod.Unico'][c],m,Consolidada[actual][c]])
 
+Consolidada['Cargo'] = Cargo 
 
 DFCat = pd.DataFrame(tabCat,columns=['Cod.Unico','Categorias']) # Junção inteligente das tabelas, a fim de criar uma relação das metas com as categorias
 
@@ -98,6 +119,9 @@ DFCat.join(Metas[['Cod.Unico','Código da Meta']].set_index('Cod.Unico'),on='Cod
 # Carregando a tabela de Planos de Ações
 PlA = './Entradas_Mereo/Planos de Ação/Plano.xlsx'
 PlA = pd.read_excel(PlA)
+PlA['Como'] = [str(line).replace('\n', ' ').replace(';', ' ').replace("'",'').replace(',','.') for line in PlA['Como']]
+PlA['Porque'] = [str(line).replace('\n', ' ').replace(';', ' ').replace("'",'').replace(',','.') for line in PlA['Porque']]
+PlA['Onde'] = [str(line).replace('\n', ' ').replace(';', ' ').replace("'",'').replace(',','.') for line in PlA['Onde']]
 Planos = [] # Criada tabela para correlacionar os meses com os planos
 for c in range (len(PlA['Código da Ação'])):
     for d in range (int(PlA['Data início planejada'][c][3:5]),int(PlA['Data fim planejada'][c][3:5])+1):
@@ -107,4 +131,6 @@ pd.DataFrame(Planos).to_csv('./Saída_Algoritmo/Planos-Mês.csv',sep=';',index=F
 
 pd.DataFrame(Data).to_csv('./Saída_Algoritmo/Data de Atualizacao.txt',index=False,header=None)
 
-print("Fim!")
+PlA.to_csv('./Saída_Algoritmo/Plano.csv',sep=';')
+
+print("Fim!", Data)

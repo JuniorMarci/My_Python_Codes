@@ -16,9 +16,10 @@ def Exportar(TipoDeMeta,Diretoria):
     sleep(5)
 
     usuario = browser.find_element(By.NAME,'txtUser')
-    usuario.send_keys('xxx')
+    #usuario.send_keys('jmarcio')
+    usuario.send_keys('robo')
     senha = browser.find_element(By.NAME,'txtPsw')
-    senha.send_keys('xxx')
+    senha.send_keys('Partage100')
     btn = browser.find_element(By.XPATH,'/html/body/form/section[1]/div[3]/input')
     btn.click()
     sleep(10)
@@ -92,17 +93,18 @@ def Exportar(TipoDeMeta,Diretoria):
             x = True
         except:
             sleep(0.5)
-            print("Não gerado")
+            #print("Não gerado")
     sleep(10)
     Arquivo = 'DataExtract0'+str(max(numeros))+'.xlsx'
-    Arquivo = 'C:\\Users\\marcio.souza\\Downloads\\'+Arquivo
+
+    Arquivo = '/home/suporte/Downloads/'+Arquivo
     if(Diretoria == '1 - Presidência - Partage ADM'): Nome = 'Meta_Presidencia.xlsx'
     if(Diretoria == '2 - Empreendimentos'): Nome = 'Meta_Empreendimentos.xlsx'
     sleep(0.5)
     x = False
     while (x==False):
         try:
-            os.rename("C:\\Users\\marcio.souza\\Partage\\#Sistemas e Qualidade - Documentos\\Análise de Metas - BI\\Correções (V2)\\Entradas_Mereo\\"+Nome,'C:\\Users\\marcio.souza\\Desktop\\excluir_'+TipoDeMeta+Diretoria)
+            os.rename('/home/suporte/OneDrive/Análise de Metas - BI/Correções (V2)/Entradas_Mereo/'+Nome,'/home/suporte/OneDrive/Análise de Metas - BI/Correções (V2)/Entradas_Mereo/Excluir/'+TipoDeMeta+Diretoria)
             x = True
         except:
             sleep(0.5)
@@ -111,7 +113,7 @@ def Exportar(TipoDeMeta,Diretoria):
             print(Nome)
     print('Movido para exclusão')
     sleep(2)
-    os.rename(Arquivo, "C:\\Users\\marcio.souza\\Partage\\#Sistemas e Qualidade - Documentos\\Análise de Metas - BI\\Correções (V2)\\Entradas_Mereo\\"+Nome)
+    os.rename(Arquivo, '/home/suporte/OneDrive/Análise de Metas - BI/Correções (V2)/Entradas_Mereo/'+Nome)
     print('Movido para entrada do Mereo')
 
     browser.quit()
