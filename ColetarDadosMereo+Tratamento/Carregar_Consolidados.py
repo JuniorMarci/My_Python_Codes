@@ -1,3 +1,8 @@
+def Registrar(mensagem):
+    from time import time
+    terminal = '/home/suporte/Área de Trabalho/API_Manual/ConBDdjango/Portable Python-3.10.5 x64/p1/p1/static/terminal.txt'
+    open(terminal,'w').write(str(time())+" - "+mensagem)
+
 def Exportar(TipoDeMeta,Diretoria):
 
     from selenium import webdriver
@@ -17,19 +22,22 @@ def Exportar(TipoDeMeta,Diretoria):
     sleep(5)
 
     usuario = browser.find_element(By.NAME,'txtUser')
-    #usuario.send_keys('jmarcio')
-    usuario.send_keys('robo')
+    usuario.send_keys('jmarcio')
+    #usuario.send_keys('robo')
     senha = browser.find_element(By.NAME,'txtPsw')
     senha.send_keys('Partage100')
     btn = browser.find_element(By.XPATH,'/html/body/form/section[1]/div[3]/input')
     btn.click()
-    sleep(10)
-    burger = browser.find_element(By.XPATH,'/html/body/div[3]/nav/div/div/ul[1]/li/div/a/img')
-    burger.click()
-    sleep(3)
-    rel_notas = browser.find_element(By.XPATH,'/html/body/sb-root/nav/sb-menu/div/div/perfect-scrollbar/div/div[1]/div/div[5]/a[2]')
-    rel_notas.click()
+    sleep(15)
+    browser.get('https://partage.mereo.com/MereoGR.EstatisticasRelatorios/DataExtractRelScores.aspx')
+    #burger = browser.find_element(By.XPATH,'/html/body/div[1]/nav/div/div/ul[1]')
+    #burger.click()
+    #sleep(3)
+    #rel_notas = browser.find_element(By.XPATH,'/html/body/sb-root/nav/sb-menu/div/div/perfect-scrollbar/div/div[1]/div/div[5]/a[2]')
+    #rel_notas.click()
     sleep(5)
+
+
     #sel_consolidado = browser.find_element(By.XPATH, "//*[contains(text(), 'Relatório')]")
     #sel_consolidado = browser.find_element(By.XPATH, "//*[contains(@class, 'x-form-cb')]")
     #sel_consolidado.click()
@@ -58,6 +66,7 @@ def Exportar(TipoDeMeta,Diretoria):
                     #print(label,label.location)
                     #action.move_by_offset(label.location).click().perform()
                     print('clicou ',texto)
+                    Registrar('Selecionada opção '+texto)
                     fim = False
                 if (fim): cpt(texto,tag)
 
@@ -90,14 +99,15 @@ def Exportar(TipoDeMeta,Diretoria):
     cpt('Ok','span')
     sleep(2)
 
-    npt('dfDtCorte','09/2023')
+    npt('dfDtCorte','12/2023')
 
     cpt('Executar','span')
     sleep(2)
     Acompanhamento = browser.find_element(By.ID,'tab-1013-btnInnerEl')
     Acompanhamento.click()
     print('clicou Acompanhamento')
-    sleep(5)
+    Registrar('Selecionada opção Acompanhamento')
+    sleep(10)
 
     Tab = browser.find_element(By.ID,'gridview-1015')
     Coluna = Tab.find_elements(By.CSS_SELECTOR,"td.x-grid-cell-col2")
@@ -105,6 +115,7 @@ def Exportar(TipoDeMeta,Diretoria):
     Linha = 'gridview-1015-record-'+str(max(numeros))
     Linha = browser.find_element(By.ID,Linha).click()
     print("Clicou na linha")
+    Registrar('Buscando arquivo para baixar')
     sleep(10)
     Exportar = 'lnk'+str(max(numeros))
     x = False
@@ -116,7 +127,7 @@ def Exportar(TipoDeMeta,Diretoria):
             sleep(0.5)
             #print("Não gerado")
     sleep(10)
-    Arquivo = 'DataExtract0'+str(max(numeros))+'.xlsx'
+    Arquivo = 'DataExtract'+str(max(numeros))+'.xlsx'
     Arquivo = '/home/suporte/Downloads/'+Arquivo
     if(Diretoria == '1 - Presidência - Partage ADM'): Nome = 'Consolidada_Presidencia.xlsx'
     if(Diretoria == '2 - Empreendimentos'): Nome = 'Consolidada_Empreendimentos.xlsx'
@@ -127,14 +138,19 @@ def Exportar(TipoDeMeta,Diretoria):
             os.rename('/home/suporte/OneDrive/Análise de Metas - BI/Correções (V2)/Entradas_Mereo/'+Nome,'/home/suporte/OneDrive/Análise de Metas - BI/Correções (V2)/Entradas_Mereo/Excluir/'+TipoDeMeta+Diretoria)
             x = True
         except:
-            sleep(0.5)
-            print("Aguardando baixar")
-            print(Arquivo)
-            print(Nome)
+            caminho = '/home/suporte/OneDrive/Análise de Metas - BI/Correções (V2)/Entradas_Mereo/'+Nome
+            if(os.path.exists(caminho)):
+                sleep(0.5)
+                print("Aguardando baixar")
+                Registrar('Aguardando baixar o arquivo')
+                print(Arquivo)
+                print(Nome)
+            else: x = True
     print('Movido para exclusão')
     sleep(2)
     os.rename(Arquivo, '/home/suporte/OneDrive/Análise de Metas - BI/Correções (V2)/Entradas_Mereo/'+Nome)
     print('Movido para entrada do Mereo')
+    Registrar('Arquivo baixado com sucesso!')
 
     browser.quit()
 
@@ -143,12 +159,14 @@ def Exportar(TipoDeMeta,Diretoria):
 FinPresidencia = True
 while (FinPresidencia):
     print("Iniciado Consolidada Presidência")
+    Registrar('Iniciado Consolidada Presidência')
     try: FinPresidencia = Exportar ('Relatório de Notas Consolidadas','1 - Presidência - Partage ADM')
     except: 1==1
 
 FinEmpree = True
 while (FinEmpree):
     print("Iniciado Consolidada Empreendimentos")
+    Registrar('Iniciado Consolidada Empreendimentos')
     try: FinEmpree = Exportar ('Relatório de Notas Consolidadas','2 - Empreendimentos')
     except: 1==1
 

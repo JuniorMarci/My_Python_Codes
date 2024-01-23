@@ -89,7 +89,7 @@ for c in range(len(Consolidada['Cod.Unico'])): # Identificação dos códigos ú
     if (c in idc): 1==1
     else: tabCat.append([Consolidada['Cod.Unico'][c],'Sem categoria'])
 
-    for m in range(1,9):
+    for m in range(1,13):
         actual = "mês "+str(m)
         tabCons.append([Consolidada['Cod.Unico'][c],m,Consolidada[actual][c]])
 
@@ -134,3 +134,8 @@ pd.DataFrame(Data).to_csv('./Saída_Algoritmo/Data de Atualizacao.txt',index=Fal
 PlA.to_csv('./Saída_Algoritmo/Plano.csv',sep=';')
 
 print("Fim!", Data)
+
+terminal = '/home/suporte/Área de Trabalho/API_Manual/ConBDdjango/Portable Python-3.10.5 x64/p1/p1/static/terminal.txt'
+open(terminal,'w').write("Processo finalizado!\n"+str(Data))
+estado = '/home/suporte/Área de Trabalho/API_Manual/ConBDdjango/Portable Python-3.10.5 x64/p1/p1/static/estado.txt'
+open(estado,'w').write("Ocioso")
