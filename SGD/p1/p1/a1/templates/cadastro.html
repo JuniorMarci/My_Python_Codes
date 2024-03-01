@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Cadastro de Usuário</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            padding: 20px;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        form {
+            width: 70%;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+        }
+
+        form input[type="text"],
+        form input[type="email"],
+        form input[type="password"] {
+            width: 22%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+
+        form button[type="submit"] {
+            width: 100%;
+            padding: 10px;
+            background-color: #4caf50;
+            color: #fff;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        form button[type="submit"]:hover {
+            background-color: #45a049;
+        }
+
+        table {
+            width: 100%;
+            background-color: #fff;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        table th,
+        table td {
+            padding: 10px;
+            border: 1px solid #ccc;
+            text-align: left;
+        }
+
+        table th {
+            background-color: #f2f2f2;
+        }
+
+        a {
+            text-decoration: none;
+            color: #4caf50;
+        }
+		
+	.btn-sair {
+        display: inline-block;
+        padding: 10px 20px;
+        background-color: #4caf50;
+        color: #fff;
+        border: none;
+        border-radius: 3px;
+        text-decoration: none;
+    }
+
+    .btn-sair:hover {
+        background-color: #45a049;
+    }
+	
+	
+	
+	/* Menu fixo */
+
+    #menu {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 45px;
+      background-color: black;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+    }
+    .button {
+      color: white;
+      text-decoration: none;
+      padding: 10px;
+    }
+	
+	
+    </style>
+</head>
+<body>
+
+<!---
+    <a href="{% url 'logout' %}" class='btn-sair'>Sair</a>
+	<a href="{% url 'change_password' %}" class='btn-sair'>Alterar Senha</a>
+	<a href="{% url 'sv1' %}" class='btn-sair'>Chamadas</a>
+	-->
+	
+	
+  <div id="menu">
+    <a href="{% url 'cadastrar_documento' %}" class="button">Cadastrar Documentos</a>
+    <a href="{% url 'alterar_status' %}" class="button">Alterar Status</a>
+	<a href="{% url 'cadastrar_usuario' %}" class="button">Cadastrar Usuários</a>
+	<a href="{% url 'change_password' %}" class="button">Trocar Senha</a>
+    <a href="{% url 'logout' %}" class="button">Sair</a>
+  </div>
+  
+  <br>
+	
+
+    <h1>Cadastrar Usuários</h1>
+    <span style="color: red;">{{ mensagem }}</span>
+    <form action="{% url 'NovoCadastro' %}" method="post">
+        {% csrf_token %}
+        <label for="id_Nome">Nome:</label>
+        <input id="id_Nome" name="Nome" type="text" required>
+        <label for="id_email">E-mail:</label>
+        <input id="id_email" name="e-Mail" type="email" pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$" required>
+        <label for="id_senha">Senha:</label>
+        <input id="id_senha" name="senha" type="password" required>
+        <button type="submit">Cadastrar</button>
+    </form>
+
+    <h1>Lista de Usuários</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Nome</th>
+                <th>E-mail</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for usuario in todos %}
+                <tr>
+                    <td>{{ usuario.nome }}</td>
+                    <td>{{ usuario.email }}</td>
+                    <td><a href="{% url 'apagar_usuario' usuario.email %}">Apagar</a></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

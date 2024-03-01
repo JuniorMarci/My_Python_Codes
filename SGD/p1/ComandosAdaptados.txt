@@ -1,0 +1,22 @@
+"C:\Users\Admin\Desktop\ConBDdjango\Portable Python-3.10.5 x64\App\Python\Scripts\django-admin.exe" startproject p1
+
+"C:\Users\Admin\Desktop\ConBDdjango\Portable Python-3.10.5 x64\App\Python\Scripts\django-admin.exe" startapp a1
+
+"C:\Users\Admin\Desktop\ConBDdjango\Portable Python-3.10.5 x64\Python-Launcher.exe" "C:\Users\Admin\Desktop\ConBDdjango\Portable Python-3.10.5 x64\p1\p1\manage.py" runserver
+
+"C:\Users\Admin\Desktop\ConBDdjango\Portable Python-3.10.5 x64\Python-Launcher.exe" "C:\Users\Admin\Desktop\ConBDdjango\Portable Python-3.10.5 x64\p1\p1\manage.py" makemigrations
+
+"C:\Users\Admin\Desktop\ConBDdjango\Portable Python-3.10.5 x64\Python-Launcher.exe" "C:\Users\Admin\Desktop\ConBDdjango\Portable Python-3.10.5 x64\p1\p1\manage.py" migrate
+
+
+
+
+
+
+------------------
+
+
+
+
+
+python "C:\Users\Admin\Desktop\ConBDdjango\Portable Python-3.10.5 x64\p1\p1\manage.py" runserver

@@ -1,0 +1,7 @@
+<!-- lista_usuarios.html -->
+<h1>Lista de Usuários</h1>
+<ul>
+  {% for usuario in usuarios %}
+    <li>{{ usuario.email }}</li>
+  {% endfor %}
+</ul>

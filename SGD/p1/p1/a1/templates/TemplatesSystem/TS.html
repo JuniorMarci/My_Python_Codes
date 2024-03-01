@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Todas as Chamadas</title>
+    <style>
+	
+	        body {
+            font-family: Arial, sans-serif;
+            
+        }
+
+	.chamadas {
+		border-collapse: collapse;
+		width: 100%;
+	}
+
+	.chamadas th,
+	.chamadas td {
+		border: 1px solid #ddd;
+		padding: 8px;
+		text-align: left;
+	}
+
+	.chamadas th {
+		background-color: #f2f2f2;
+		position: sticky;
+		top: 0;
+	}
+		
+		.botaotxt {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #333;
+  color: #fff;
+  text-decoration: none;
+  border-radius: 5px;
+}
+
+.botaotxt:hover {
+  background-color: #222;
+}
+
+        .FiltrosGerais {
+            position: fixed;
+            top: 0;
+            left: -1000px;
+            width: 500px;
+            height: 100vh;
+            background: #f2f2f2;
+            transition: left 0.3s ease-in-out;
+            padding: 20px;
+			z-index: 9999;
+        }
+
+        .FiltrosGerais:target {
+            left: 0;
+        }
+
+        .FiltrosGerais-close {
+            
+            text-align: right;
+            margin-bottom: 10px;
+        }
+
+        .FiltrosGerais-close a {
+            color: #333;
+            text-decoration: none;
+        }
+		
+		
+	
+    .botaoFiltro {
+        display: block;
+        width: 100%;
+        padding: 10px;
+        background-color: #555;
+        color: #fff;
+        text-decoration: none;
+        border-radius: 5px;
+        border: none;
+        cursor: pointer;
+        margin-top: 10px;
+    }
+
+    .botaoFiltro:hover {
+        background-color: #444;
+    }
+
+    .campoFiltro {
+        width: 100%;
+        padding: 10px;
+        box-sizing: border-box;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 14px;
+        margin-top: 10px;
+    }
+
+ .pagination {
+            margin-top: 10px;
+        }
+
+        .pagination a {
+            display: inline-block;
+            padding: 5px 10px;
+            background-color: #f2f2f2;
+            color: #333;
+            text-decoration: none;
+            border: 1px solid #ccc;
+            margin-right: 5px;
+        }
+
+        .pagination a:hover {
+            background-color: #ddd;
+        }
+
+        .pagination .current-page {
+            font-weight: bold;
+        }
+		
+		
+    </style>
+
+
+<script>
+        function ocultarMaiores() {
+            // Obter o valor digitado em segundos
+            var segundos = parseInt(document.getElementById('inMaiores').value);
+
+            // Obter todas as linhas da tabela
+            var linhas = document.querySelectorAll('#tabela-chamadas tbody tr');
+
+            // Iterar sobre as linhas e ocultar aquelas com duração maior que o valor digitado
+            for (var i = 0; i < linhas.length; i++) {
+                var duracaoTexto = linhas[i].querySelector('td:nth-child(3)').textContent;
+                var duracaoSegundos = duracaoParaSegundos(duracaoTexto);
+				
+                if (duracaoSegundos > segundos) {
+                    linhas[i].style.display = 'none';
+					
+					console.log("Ocultou!");
+					console.log(duracaoSegundos);
+					console.log(segundos);
+                } else {
+                    linhas[i].style.display = '';
+					console.log("Exibiu!");
+					
+                }
+            }
+        }
+		
+		function ocultarMenores() {
+            // Obter o valor digitado em segundos
+            var segundos = parseInt(document.getElementById('inMenores').value);
+
+            // Obter todas as linhas da tabela
+            var linhas = document.querySelectorAll('#tabela-chamadas tbody tr');
+
+            // Iterar sobre as linhas e ocultar aquelas com duração maior que o valor digitado
+            for (var i = 0; i < linhas.length; i++) {
+                var duracaoTexto = linhas[i].querySelector('td:nth-child(3)').textContent;
+                var duracaoSegundos = duracaoParaSegundos(duracaoTexto);
+				
+                if (duracaoSegundos < segundos) {
+                    linhas[i].style.display = 'none';
+					
+					console.log("Ocultou!");
+					console.log(duracaoSegundos);
+					console.log(segundos);
+                } else {
+                    linhas[i].style.display = '';
+					console.log("Exibiu!");
+					
+                }
+            }
+        }
+
+        function duracaoParaSegundos(duracaoTexto) {
+            //console.log("Original:");
+			//console.log(duracaoTexto);
+			var partes = duracaoTexto.split(':');
+			//console.log("Partes:");
+			//console.log(partes);
+            var horas = parseInt(partes[0]);
+			//console.log("Horas:");
+			//console.log(horas);
+            var minutos = parseInt(partes[1]);
+			//console.log("Minutos:");
+			//console.log(minutos);
+            var segundos = parseInt(partes[2]);
+			//console.log("Segundos:");
+			//console.log(segundos);
+
+            return horas * 3600 + minutos * 60 + segundos;
+        }
+		
+        function restringirAgentes() {
+            // Obter o valor digitado no campo "inAgentes"
+            var agentesDigitados = document.getElementById('inAgentes').value.toLowerCase();
+
+            // Obter todas as linhas da tabela
+            var linhas = document.querySelectorAll('#tabela-chamadas tbody tr');
+
+            // Iterar sobre as linhas e comparar o conteúdo do campo "Agentes" com os agentes digitados
+            for (var i = 0; i < linhas.length; i++) {
+                var agentesTexto = linhas[i].querySelector('td:nth-child(4)').textContent.toLowerCase();
+				
+				//console.log(agentesDigitados);
+				// Remover espaços
+				var agentesTexto = agentesTexto.replace(/\s/g, "").replace(/\n/g, "");
+				// Remover quebras de linha
+				var partes = agentesTexto.split(',')
+				//console.log(partes);
+				
+				if (String(agentesDigitados)=="") {linhas[i].style.display = '';}
+				else {
+				
+				if (partes.includes(String(agentesDigitados))) {
+				console.log("Sim");
+				linhas[i].style.display = '';
+				}
+				
+				else { console.log(partes); console.log(agentesDigitados); console.log("Não");
+				linhas[i].style.display = 'none';
+				}
+				
+				}
+				
+				}
+				
+				}
+				
+				
+				        function restringirInterlocutores() {
+            // Obter o valor digitado no campo "inAgentes"
+            var agentesDigitados = document.getElementById('inInterlocutores').value.toLowerCase();
+
+            // Obter todas as linhas da tabela
+            var linhas = document.querySelectorAll('#tabela-chamadas tbody tr');
+
+            // Iterar sobre as linhas e comparar o conteúdo do campo "Agentes" com os agentes digitados
+            for (var i = 0; i < linhas.length; i++) {
+                var agentesTexto = linhas[i].querySelector('td:nth-child(5)').textContent.toLowerCase();
+				
+				//console.log(agentesDigitados);
+				// Remover espaços
+				var agentesTexto = agentesTexto.replace(/\s/g, "").replace(/\n/g, "");
+				// Remover quebras de linha
+				var partes = agentesTexto.split(',')
+				//console.log(partes);
+				
+				if (String(agentesDigitados)=="") {linhas[i].style.display = '';}
+				else {
+				
+				if (partes.includes(String(agentesDigitados))) {
+				console.log("Sim");
+				linhas[i].style.display = '';
+				}
+				
+				else { console.log(partes); console.log(agentesDigitados); console.log("Não");
+				linhas[i].style.display = 'none';
+				}
+				
+				}
+				
+				}
+				
+				}
+				
+				
+								        function restringirHabilidades() {
+            // Obter o valor digitado no campo "inAgentes"
+            var agentesDigitados = document.getElementById('inHabilidades').value.toLowerCase();
+
+            // Obter todas as linhas da tabela
+            var linhas = document.querySelectorAll('#tabela-chamadas tbody tr');
+
+            // Iterar sobre as linhas e comparar o conteúdo do campo "Agentes" com os agentes digitados
+            for (var i = 0; i < linhas.length; i++) {
+                var agentesTexto = linhas[i].querySelector('td:nth-child(7)').textContent.toLowerCase();
+				
+				console.log(agentesDigitados);
+				console.log(agentesTexto);
+				// Remover espaços
+				//var agentesTexto = agentesTexto.replace(/\s/g, "").replace(/\n/g, "");
+				// Remover quebras de linha
+				//var partes = agentesTexto.split(',')
+				//console.log(partes);
+				
+				if (String(agentesDigitados)=="") {linhas[i].style.display = '';}
+				
+				else {
+				
+				if (String(agentesDigitados)==String(agentesTexto)) {
+				console.log("Sim");
+				linhas[i].style.display = '';
+				}
+				
+				else { console.log("Não");
+				linhas[i].style.display = 'none';
+				}
+				
+				}
+				
+				}
+				
+				}
+				
+				
+				
+				function restringirID() {
+            // Obter o valor digitado no campo "inAgentes"
+            var agentesDigitados = document.getElementById('inID').value.toLowerCase();
+
+            // Obter todas as linhas da tabela
+            var linhas = document.querySelectorAll('#tabela-chamadas tbody tr');
+
+            // Iterar sobre as linhas e comparar o conteúdo do campo "Agentes" com os agentes digitados
+            for (var i = 0; i < linhas.length; i++) {
+                var agentesTexto = linhas[i].querySelector('td:nth-child(8)').textContent.toLowerCase();
+				
+				console.log(agentesDigitados);
+				console.log(agentesTexto);
+				// Remover espaços
+				//var agentesTexto = agentesTexto.replace(/\s/g, "").replace(/\n/g, "");
+				// Remover quebras de linha
+				//var partes = agentesTexto.split(',')
+				//console.log(partes);
+				
+				if (String(agentesDigitados)=="") {linhas[i].style.display = '';}
+				
+				else {
+				
+				if (String(agentesDigitados)==String(agentesTexto)) {
+				console.log("Sim");
+				linhas[i].style.display = '';
+				}
+				
+				else { console.log("Não");
+				linhas[i].style.display = 'none';
+				}
+				
+				}
+				
+				}
+				
+				}
+				
+		
+    </script>
+
+
+</head>
+<body>
+
+<div class='FiltrosGerais' id="FiltrosGerais">
+
+
+    <a href="#" class="FiltrosGerais-close botaotxt">X</a>
+
+<form id='filtrarTudo' method="post" action="{% url 'sv1' %}">
+  {% csrf_token %}
+ 
+<table style="width: 100%;">
+    <tr>
+        <th style="width: 50%;">
+            <input class="campoFiltro" type="text" id="inMenores" name='menores_filtrado' value="{{menores_filtrado}}" placeholder="Digite o valor em segundos">
+		</th>
+		<th style="width: 50%;">
+            <button class="botaoFiltro" onclick="ocultarMenores()">Exibir Menores</button>
+		</th>
+</table>
+
+<table style="width: 100%;">
+    <tr>
+        <th style="width: 50%;">
+            <input class="campoFiltro" type="text" id="inMaiores" name='maiores_filtrado' value="{{maiores_filtrado}}" placeholder="Digite o valor em segundos">
+		</th>
+		<th style="width: 50%;">
+            <button class="botaoFiltro" onclick="ocultarMaiores()">Exibir Maiores</button>
+		</th>
+</table>
+  
+<table style="width: 100%;">
+    <tr>
+        <th style="width: 50%;">
+            <input class="campoFiltro" type="text" id="inAgentes" name="agente_filtrado" value="{{ agente_filtrado }}" placeholder="Digite um agente">
+		</th>
+		<th style="width: 50%;">
+            <button class="botaoFiltro" type='submit'>Filtrar Agentes</button>
+		</th>
+</table>
+
+<table style="width: 100%;">
+    <tr>
+        <th style="width: 50%;">
+            <input class="campoFiltro" type="text" id="inAgentes" name="interlocutor_filtrado" value="{{ interlocutor_filtrado }}" placeholder="Digite um interlocutor">
+		</th>
+		<th style="width: 50%;">
+            <button class="botaoFiltro" type='submit'>Filtrar Interlocutores</button>
+		</th>
+</table>
+
+<table style="width: 100%;">
+    <tr>
+        <th style="width: 50%;">
+            <input class="campoFiltro" type="text" id="inHabilidades" name="habilidade_filtrada" value="{{ habilidade_filtrada }}" placeholder="Digite uma habilidade">
+		</th>
+		<th style="width: 50%;">
+            <button class="botaoFiltro" onclick="restringirHabilidades()">Filtrar Habilidades</button>
+		</th>
+</table>
+
+<table style="width: 100%;">
+    <tr>
+        <th style="width: 50%;">
+            <input class="campoFiltro" type="text" id="inID" name="idchamada_filtrado" value="{{ idchamada_filtrado }}" placeholder="Digite um ID de Chamada">
+		</th>
+		<th style="width: 50%;">
+            <button class="botaoFiltro" onclick="restringirID()">Filtrar ID da Chamada</button>
+		</th>
+</table>
+
+</form>
+
+
+
+
+
+<!---
+
+<table style="width: 100%;">
+    <tr>
+        <th style="width: 50%;">
+            <input class="campoFiltro" type="text" id="inMaiores" placeholder="Digite o valor em segundos">
+		</th>
+		<th style="width: 50%;">
+            <button class="botaoFiltro" onclick="ocultarMaiores()">Ocultar Maiores</button>
+		</th>
+</table>
+
+<table style="width: 100%;">
+    <tr>
+        <th style="width: 50%;">
+            <input class="campoFiltro" type="text" id="inMenores" placeholder="Digite o valor em segundos">
+		</th>
+		<th style="width: 50%;">
+            <button class="botaoFiltro" onclick="ocultarMenores()">Ocultar Menores</button>
+		</th>
+</table>
+
+<table style="width: 100%;">
+    <tr>
+        <th style="width: 50%;">
+            <input class="campoFiltro" type="text" id="inAgentes" placeholder="Digite um agente">
+		</th>
+		<th style="width: 50%;">
+            <button class="botaoFiltro" onclick="restringirAgentes()">Filtrar Agentes</button>
+		</th>
+</table>
+
+<table style="width: 100%;">
+    <tr>
+        <th style="width: 50%;">
+            <input class="campoFiltro" type="text" id="inInterlocutores" placeholder="Digite um interlocutor">
+		</th>
+		<th style="width: 50%;">
+            <button class="botaoFiltro" onclick="restringirInterlocutores()">Filtrar Interlocutores</button>
+		</th>
+</table>
+
+<table style="width: 100%;">
+    <tr>
+        <th style="width: 50%;">
+            <input class="campoFiltro" type="text" id="inHabilidades" placeholder="Digite uma habilidade">
+		</th>
+		<th style="width: 50%;">
+            <button class="botaoFiltro" onclick="restringirHabilidades()">Filtrar Habilidades</button>
+		</th>
+</table>
+
+<table style="width: 100%;">
+    <tr>
+        <th style="width: 50%;">
+            <input class="campoFiltro" type="text" id="inID" placeholder="Digite um ID de Chamada">
+		</th>
+		<th style="width: 50%;">
+            <button class="botaoFiltro" onclick="restringirID()">Filtrar ID da Chamada</button>
+		</th>
+</table>
+
+--->
+		       
+
+<!---
+
+------------
+
+
+<table style="width: 100%;">
+    <tr>
+        <td style="width: 50%;">
+            <input class="campoFiltro" type="text" id="inMaiores" placeholder="Digite o valor em segundos">
+            <input class="campoFiltro" type="text" id="inMenores" placeholder="Digite o valor em segundos">
+            <input class="campoFiltro" type="text" id="inAgentes" placeholder="Digite um agente">
+            <input class="campoFiltro" type="text" id="inInterlocutores" placeholder="Digite um interlocutor">
+            <input class="campoFiltro" type="text" id="inHabilidades" placeholder="Digite uma habilidade">
+            <input class="campoFiltro" type="text" id="inID" placeholder="Digite um ID de Chamada">
+        </td>
+        <td style="width: 50%;">
+            <button class="botaoFiltro" onclick="ocultarMaiores()">Ocultar Maiores</button>
+            <button class="botaoFiltro" onclick="ocultarMenores()">Ocultar Menores</button>
+            <button class="botaoFiltro" onclick="restringirAgentes()">Filtrar Agentes</button>
+            <button class="botaoFiltro" onclick="restringirInterlocutores()">Filtrar Interlocutores</button>
+            <button class="botaoFiltro" onclick="restringirHabilidades()">Filtrar Habilidades</button>
+            <button class="botaoFiltro" onclick="restringirID()">Filtrar ID da Chamada</button>
+        </td>
+    </tr>
+</table>
+
+--->
+
+</div>
+
+<!---
+<form action="{% url 'sv1' %}" method="post">
+  {% csrf_token %}
+  <button type="submit">Okay!</button>
+ --->
+
+    <a href="#FiltrosGerais" class="botaotxt">&lt;</a>
+	<a href="{% url 'sv1' %}" class='botaotxt'>Desfazer todos os Filtros</a>
+	<a href="{% url 'cadastrar_usuario' %}" class='botaotxt'>Cadastros</a>
+	<a href="{% url 'change_password' %}" class='botaotxt'>Alterar Senha</a>
+
+    <h1>Todas as Chamadas</h1>
+
+    <table id="tabela-chamadas" class='chamadas'>
+        <thead>
+            <tr>
+                <th>Áudio</th>
+                <th>Início da Chamada</th>
+                <th>Duração</th>
+                <th>Agentes</th>
+                <th>Interlocutores</th>
+                <th>Serviço</th>
+                <th>Habilidades</th>
+                <th>ID de Chamada</th>
+            </tr>
+        </thead>
+        <tbody>
+                {% for chamada in pagina_atual %}
+                <tr>
+                    <td>
+                        <audio controls>
+                            <source src="/media/{{ chamada.arquivo }}" type="audio/mpeg">
+                            Seu navegador não suporta o elemento de áudio.
+                        </audio>
+						<a href="/media/{{ chamada.arquivo }}" download class="botao-download">&#x1F4E5;</a>      
+                    </td>
+                    <td>{{ chamada.inicio_chamada }}</td>
+                    <td>{{ chamada.duracao }}</td>
+                    <td>
+                        {% for agente in chamada.agentes.all %}
+                        {{ agente.nome }}{% if not forloop.last %}, {% endif %}
+                        {% endfor %}
+                    </td>
+                    <td>
+                        {% for interlocutor in chamada.interlocutores.all %}
+                        {{ interlocutor.nome }}{% if not forloop.last %}, {% endif %}
+                        {% endfor %}
+                    </td>
+                    <td>{{ chamada.servico }}</td>
+                    <td>{{ chamada.habilidades }}</td>
+                    <td>{{ chamada.id_chamada }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+		
+<!-- Elementos de paginação -->
+<div class="pagination">
+    {% if pagina_atual.has_previous %}
+        <a href="?pagina={{ pagina_atual.previous_page_number }}{% if idchamada_filtrado %}&idchamada_filtrado={{ idchamada_filtrado }}{% endif %}{% if habilidade_filtrada %}&habilidade_filtrada={{ habilidade_filtrada }}{% endif %}{% if interlocutor_filtrado %}&interlocutor_filtrado={{ interlocutor_filtrado }}{% endif %}{% if agente_filtrado %}&agente_filtrado={{ agente_filtrado }}{% endif %}{% if maiores_filtrado %}&maiores_filtrado={{ maiores_filtrado }}{% endif %}{% if menores_filtrado %}&menores_filtrado={{ menores_filtrado }}{% endif %}">Anterior</a>
+    {% endif %}
+
+    {% for num_pagina in pagina_atual.paginator.page_range %}
+        {% if num_pagina == pagina_atual.number %}
+            <span class="current-page">{{ num_pagina }}</span>
+        {% else %}
+            <a href="?pagina={{ num_pagina }}{% if idchamada_filtrado %}&idchamada_filtrado={{ idchamada_filtrado }}{% endif %}{% if habilidade_filtrada %}&habilidade_filtrada={{ habilidade_filtrada }}{% endif %}{% if interlocutor_filtrado %}&interlocutor_filtrado={{ interlocutor_filtrado }}{% endif %}{% if agente_filtrado %}&agente_filtrado={{ agente_filtrado }}{% endif %}{% if maiores_filtrado %}&maiores_filtrado={{ maiores_filtrado }}{% endif %}{% if menores_filtrado %}&menores_filtrado={{ menores_filtrado }}{% endif %}">{{ num_pagina }}</a>
+        {% endif %}
+    {% endfor %}
+
+    {% if pagina_atual.has_next %}
+        <a href="?pagina={{ pagina_atual.next_page_number }}{% if idchamada_filtrado %}&idchamada_filtrado={{ idchamada_filtrado }}{% endif %}{% if habilidade_filtrada %}&habilidade_filtrada={{ habilidade_filtrada }}{% endif %}{% if interlocutor_filtrado %}&interlocutor_filtrado={{ interlocutor_filtrado }}{% endif %}{% if agente_filtrado %}&agente_filtrado={{ agente_filtrado }}{% endif %}{% if maiores_filtrado %}&maiores_filtrado={{ maiores_filtrado }}{% endif %}{% if menores_filtrado %}&menores_filtrado={{ menores_filtrado }}{% endif %}">Próxima</a>
+    {% endif %}
+</div>
+
+
+
+
+    </div>
+
+</body>
+</html>

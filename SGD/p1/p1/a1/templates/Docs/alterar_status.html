@@ -1,0 +1,223 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Cadastro de Documentos</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            padding: 20px;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        form {
+            width: 70%;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+        }
+
+
+        form input[type="text"],
+		form input[type="number"],
+        form input[type="email"],
+        form input[type="password"],
+		form select		{
+            width: 90%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+			display:block;
+        }
+		
+        form input[type="submit"] {
+            width: 100%;
+            padding: 10px;
+            background-color: #4caf50;
+            color: #fff;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+
+        }
+
+        form input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+		
+		
+
+        table {
+            width: 100%;
+            background-color: #fff;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        table th,
+        table td {
+            padding: 10px;
+            border: 1px solid #ccc;
+            text-align: left;
+        }
+
+        table th {
+            background-color: #f2f2f2;
+        }
+
+        a {
+            text-decoration: none;
+            color: #4caf50;
+        }
+		
+	
+	
+	
+	.btn-sair {
+        display: inline-block;
+        padding: 10px 20px;
+        background-color: #4caf50;
+        color: #fff;
+        border: none;
+        border-radius: 3px;
+        text-decoration: none;
+		width: 100%;
+		text-align: center;
+    }
+
+	
+    .btn-sair:hover {
+        background-color: #45a049;
+    }
+	
+	.input-box {
+  word-wrap: break-word;
+  word-break: break-word;
+}
+	
+
+	.button-container {
+  display: flex;
+  margin-bottom: 5px; /* Espaço entre os botões */
+  align-items: center;
+}
+
+.button-container div {
+  flex: 1; /* Cada div ocupa a mesma quantidade de espaço */
+  margin-right: 50px; /* Espaço entre os botões */
+  text-align: center;
+  
+}
+
+	
+/* Menu fixo */
+
+    #menu {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 45px;
+      background-color: black;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+    }
+    .button {
+      color: white;
+      text-decoration: none;
+      padding: 10px;
+    }
+
+    </style>
+</head>
+
+<body>
+
+
+
+  <div id="menu">
+    <a href="{% url 'cadastrar_documento' %}" class="button">Cadastrar Documentos</a>
+    <a href="{% url 'alterar_status' %}" class="button">Alterar Status</a>
+	<a href="{% url 'cadastrar_usuario' %}" class="button">Cadastrar Usuários</a>
+	<a href="{% url 'change_password' %}" class="button">Trocar Senha</a>
+    <a href="{% url 'logout' %}" class="button">Sair</a>
+  </div>
+
+<br>
+
+<h1>Alterar Status</h1>
+
+<table>
+	<thead>
+		<tr>
+			<th>Nome</th>
+			<th>Arquivo</th>
+			<th>Extensao</th>
+			<th>Revisão</th>
+			<th>Versão</th>
+			<th>Status</th>
+			<th>Observações</th>
+			<th>Ação</th>
+			
+		</tr>
+
+<tbody>
+{% for c in todos %}
+
+  {% csrf_token %}
+  
+  <tr> 
+    <td>{{ c.nome }}</td>
+    <td>{{ c.arquivo }}</td>
+    <td>{{ c.extensao }}</td>
+    <td>{{ c.revisao }}</td>
+    <td>{{ c.versao }}</td>
+	
+    <td>
+		{{c.status}}		
+    </td>
+    <td>
+    <form action="/add-obs/{{c.arquivo}}/" method="GET">
+  <textarea id="obs" name="obs" rows="3" cols="10" placeholder="Sua observacao aqui">{{ c.obs }}</textarea>
+  <button type="submit">Enviar obs</button>
+</form>
+
+
+    </td>
+    <td>
+	
+<div class="button-container">
+  <div>
+    <a href="/media/{{c.arquivo}}{{c.extensao}}" class="btn-sair">Baixar</a>
+  </div>
+  
+  <div>
+    <a href="/at-st/{{c.arquivo}}/Necessita Alteracao" class="btn-sair">Alterar</a>
+  </div>
+</div>
+
+<div class="button-container">
+  <div>
+    <a href="/at-st/{{c.arquivo}}/Reprovado" class="btn-sair">Reprovar</a>
+  </div>
+  
+  <div>
+    <a href="/at-st/{{c.arquivo}}/Aprovado" class="btn-sair">Aprovar</a>
+  </div>
+</div>
+
+	</td>	
+  </tr>
+
+{% endfor %}
+
+</tbody>
+</table>
+</body>
+</html>
